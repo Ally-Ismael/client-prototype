@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Verification - JobScooter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+            --warning-color: #ed8936;
+            --danger-color: #e53e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background: var(--light-bg);
+        }
+
+        .container-custom {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .progress-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: var(--accent-color);
+            height: 100%;
+            width: 40%;
+            transition: width 0.3s ease;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .language-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .language-option:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.2);
+        }
+
+        .language-option.selected {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .language-option input[type="checkbox"] {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            transform: scale(1.5);
+        }
+
+        .flag-icon {
+            width: 40px;
+            height: 30px;
+            margin-right: 1rem;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .flag-en {
+            background: linear-gradient(to bottom, #012169 0%, #012169 33%, white 33%, white 66%, #C8102E 66%);
+        }
+
+        .flag-de {
+            background: linear-gradient(to bottom, #000 33%, #DD0000 33%, #DD0000 66%, #FFCE00 66%);
+        }
+
+        .certificate-upload {
+            background: #fef5e7;
+            border: 2px dashed var(--warning-color);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .certificate-upload:hover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .certificate-upload.dragover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--warning-color);
+            margin-bottom: 1rem;
+        }
+
+        .institution-info {
+            background: #e6fffa;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .verification-status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .status-pending {
+            background: #fef5e7;
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .status-verified {
+            background: #f0fff4;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .status-failed {
+            background: #fed7d7;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.3);
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            background: var(--secondary-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #2d3748;
+            color: white;
+        }
+
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        .spinner-custom {
+            width: 2rem;
+            height: 2rem;
+            border: 0.2rem solid var(--light-bg);
+            border-top: 0.2rem solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid var(--danger-color);
+            color: #c53030;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .certificate-preview {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="color: var(--primary-color);">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Step 2 of 5</span>
+                <a href="/dashboard" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-custom">
+        <!-- Progress Header -->
+        <div class="progress-header text-center">
+            <h2 class="mb-3">
+                <i class="fas fa-globe me-2" style="color: var(--accent-color);"></i>
+                Language Verification
+            </h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <small class="text-muted">Progress: 40% Complete</small>
+        </div>
+
+        <!-- Language Selection -->
+        <div class="step-card">
+            <h4 class="mb-4">
+                <i class="fas fa-language me-2"></i>
+                Select Your Languages
+            </h4>
+            <p class="text-muted mb-4">
+                Choose the language(s) you want to use for job applications. This will determine which employers can find your profile.
+            </p>
+
+            <!-- English Option -->
+            <div class="language-option" id="english-option" onclick="toggleLanguage('english')">
+                <div class="d-flex align-items-center">
+                    <div class="flag-icon flag-en"></div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">English</h5>
+                        <p class="text-muted mb-0">Apply for English-speaking positions</p>
+                    </div>
+                    <input type="checkbox" id="english-checkbox" onchange="handleLanguageChange('english')">
+                </div>
+            </div>
+
+            <!-- German Option -->
+            <div class="language-option" id="german-option" onclick="toggleLanguage('german')">
+                <div class="d-flex align-items-center">
+                    <div class="flag-icon flag-de"></div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">German (Deutsch)</h5>
+                        <p class="text-muted mb-0">Apply for German-speaking positions</p>
+                    </div>
+                    <input type="checkbox" id="german-checkbox" onchange="handleLanguageChange('german')">
+                </div>
+            </div>
+
+            <!-- Both Languages Option -->
+            <div class="language-option" id="both-option" onclick="toggleLanguage('both')">
+                <div class="d-flex align-items-center">
+                    <div class="d-flex">
+                        <div class="flag-icon flag-en me-1"></div>
+                        <div class="flag-icon flag-de"></div>
+                    </div>
+                    <div class="flex-grow-1 ms-2">
+                        <h5 class="mb-1">Both Languages</h5>
+                        <p class="text-muted mb-0">Apply for positions in both English and German</p>
+                    </div>
+                    <input type="checkbox" id="both-checkbox" onchange="handleLanguageChange('both')">
+                </div>
+            </div>
+        </div>
+
+        <!-- German Certificate Verification -->
+        <div class="step-card d-none" id="german-verification-section">
+            <h4 class="mb-4">
+                <i class="fas fa-certificate me-2"></i>
+                German Language Certificate Verification
+            </h4>
+            <p class="text-muted mb-4">
+                To verify your German language proficiency, please upload a certificate from an accredited institution.
+            </p>
+
+            <div class="institution-info">
+                <h6><i class="fas fa-info-circle me-2"></i>Accepted Institutions</h6>
+                <ul class="mb-0">
+                    <li>Goethe-Institut certificates (A1-C2)</li>
+                    <li>TestDaF (Test Deutsch als Fremdsprache)</li>
+                    <li>DSH (Deutsche Sprachprüfung für den Hochschulzugang)</li>
+                    <li>TELC (The European Language Certificates)</li>
+                    <li>University language certificates from German institutions</li>
+                </ul>
+            </div>
+
+            <div class="certificate-upload" id="certificate-upload-area" onclick="document.getElementById('certificate-file').click()">
+                <div id="upload-content">
+                    <i class="fas fa-file-upload upload-icon"></i>
+                    <h5>Upload German Language Certificate</h5>
+                    <p class="text-muted mb-0">Supported formats: JPG, PNG, PDF (Max 10MB)</p>
+                </div>
+                <div class="processing-overlay d-none" id="certificate-processing">
+                    <div class="text-center">
+                        <div class="spinner-custom mb-2"></div>
+                        <small>Verifying certificate...</small>
+                    </div>
+                </div>
+            </div>
+            <input type="file" id="certificate-file" class="d-none" accept="image/*,.pdf" onchange="handleCertificateUpload(event)">
+
+            <!-- Certificate Preview -->
+            <div id="certificate-preview-section" class="d-none">
+                <div class="certificate-preview">
+                    <div class="d-flex align-items-start">
+                        <img id="certificate-preview-img" class="preview-image me-3" src="" alt="Certificate Preview">
+                        <div class="flex-grow-1">
+                            <h6 id="certificate-name">Certificate Name</h6>
+                            <p class="text-muted mb-2" id="certificate-details">Processing certificate details...</p>
+                            <div class="verification-status status-pending" id="verification-status">
+                                <i class="fas fa-clock me-1"></i>Verification Pending
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm" onclick="removeCertificate()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center">
+            <button class="btn btn-primary-custom" id="continue-button" onclick="proceedToNextStep()" disabled>
+                <i class="fas fa-arrow-right me-2"></i>Continue to Certificate Analysis
+            </button>
+            <p class="text-muted mt-2">
+                <i class="fas fa-info-circle me-1"></i>
+                Select at least one language to continue
+            </p>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-message d-none" id="error-section">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="error-message"></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedLanguages = [];
+        let germanCertificateUploaded = false;
+        let germanCertificateVerified = false;
+        let authToken = localStorage.getItem('jobscooter_auth_token');
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!authToken) {
+                window.location.href = '/login';
+                return;
+            }
+
+            setupDragAndDrop();
+            loadUserLanguagePreferences();
+        });
+
+        async function loadUserLanguagePreferences() {
+            try {
+                const response = await fetch('/api/profile/language-preferences', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.languages && data.languages.length > 0) {
+                        // Pre-select languages based on saved preferences
+                        data.languages.forEach(lang => {
+                            if (lang === 'both') {
+                                selectLanguage('both');
+                            } else {
+                                selectLanguage(lang);
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading language preferences:', error);
+            }
+        }
+
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('certificate-upload-area');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleCertificateFile(files[0]);
+                }
+            });
+        }
+
+        function toggleLanguage(language) {
+            const checkbox = document.getElementById(language + '-checkbox');
+            checkbox.checked = !checkbox.checked;
+            handleLanguageChange(language);
+        }
+
+        function handleLanguageChange(language) {
+            const checkbox = document.getElementById(language + '-checkbox');
+            
+            if (language === 'both') {
+                if (checkbox.checked) {
+                    // Select both, deselect individual options
+                    document.getElementById('english-checkbox').checked = false;
+                    document.getElementById('german-checkbox').checked = false;
+                    selectLanguage('both');
+                    selectedLanguages = ['both'];
+                } else {
+                    deselectLanguage('both');
+                    selectedLanguages = [];
+                }
+            } else {
+                // Deselect "both" if individual language is selected
+                document.getElementById('both-checkbox').checked = false;
+                deselectLanguage('both');
+
+                if (checkbox.checked) {
+                    selectLanguage(language);
+                    if (!selectedLanguages.includes(language)) {
+                        selectedLanguages.push(language);
+                    }
+                } else {
+                    deselectLanguage(language);
+                    selectedLanguages = selectedLanguages.filter(l => l !== language);
+                }
+            }
+
+            // Show/hide German verification section
+            const germanSection = document.getElementById('german-verification-section');
+            if (selectedLanguages.includes('german') || selectedLanguages.includes('both')) {
+                germanSection.classList.remove('d-none');
+            } else {
+                germanSection.classList.add('d-none');
+                germanCertificateUploaded = false;
+                germanCertificateVerified = false;
+            }
+
+            updateContinueButton();
+        }
+
+        function selectLanguage(language) {
+            document.getElementById(language + '-option').classList.add('selected');
+        }
+
+        function deselectLanguage(language) {
+            document.getElementById(language + '-option').classList.remove('selected');
+        }
+
+        function updateContinueButton() {
+            const continueButton = document.getElementById('continue-button');
+            const needsGermanVerification = selectedLanguages.includes('german') || selectedLanguages.includes('both');
+            
+            if (selectedLanguages.length === 0) {
+                continueButton.disabled = true;
+                continueButton.innerHTML = '<i class="fas fa-arrow-right me-2"></i>Continue to Certificate Analysis';
+            } else if (needsGermanVerification && !germanCertificateVerified) {
+                continueButton.disabled = true;
+                continueButton.innerHTML = '<i class="fas fa-certificate me-2"></i>German Certificate Required';
+            } else {
+                continueButton.disabled = false;
+                continueButton.innerHTML = '<i class="fas fa-arrow-right me-2"></i>Continue to Certificate Analysis';
+            }
+        }
+
+        function handleCertificateUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleCertificateFile(file);
+            }
+        }
+
+        async function handleCertificateFile(file) {
+            // Validate file
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+
+            if (file.size > maxSize) {
+                showError('File size must be less than 10MB');
+                return;
+            }
+
+            if (!allowedTypes.includes(file.type)) {
+                showError('Only JPG, PNG, and PDF files are allowed');
+                return;
+            }
+
+            // Show processing overlay
+            document.getElementById('certificate-processing').classList.remove('d-none');
+
+            // Show file preview
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('certificate-preview-img').src = e.target.result;
+                    document.getElementById('certificate-name').textContent = file.name;
+                    document.getElementById('certificate-preview-section').classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('certificate-preview-img').style.display = 'none';
+                document.getElementById('certificate-name').textContent = file.name;
+                document.getElementById('certificate-preview-section').classList.remove('d-none');
+            }
+
+            try {
+                // Upload and verify certificate
+                const formData = new FormData();
+                formData.append('certificate', file);
+                formData.append('language', 'german');
+
+                const response = await fetch('/api/certificates/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Update certificate details
+                    document.getElementById('certificate-details').textContent = result.certificateInfo.details || 'German language certificate';
+                    
+                    // Verify against accredited institutions
+                    await verifyCertificateInstitution(result.certificateId);
+                } else {
+                    throw new Error(result.message || 'Failed to upload certificate');
+                }
+            } catch (error) {
+                console.error('Error uploading certificate:', error);
+                showError('Failed to upload certificate. Please try again.');
+                removeCertificate();
+            } finally {
+                document.getElementById('certificate-processing').classList.add('d-none');
+            }
+        }
+
+        async function verifyCertificateInstitution(certificateId) {
+            try {
+                const response = await fetch(`/api/certificates/verify/${certificateId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    if (result.verified) {
+                        // Certificate verified
+                        document.getElementById('verification-status').className = 'verification-status status-verified';
+                        document.getElementById('verification-status').innerHTML = '<i class="fas fa-check-circle me-1"></i>Verified';
+                        germanCertificateVerified = true;
+                    } else {
+                        // Certificate not verified
+                        document.getElementById('verification-status').className = 'verification-status status-failed';
+                        document.getElementById('verification-status').innerHTML = '<i class="fas fa-times-circle me-1"></i>Not Verified';
+                        germanCertificateVerified = false;
+                    }
+                } else {
+                    throw new Error(result.message || 'Failed to verify certificate');
+                }
+            } catch (error) {
+                console.error('Error verifying certificate:', error);
+                document.getElementById('verification-status').className = 'verification-status status-failed';
+                document.getElementById('verification-status').innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Verification Failed';
+                germanCertificateVerified = false;
+            }
+
+            germanCertificateUploaded = true;
+            updateContinueButton();
+        }
+
+        function removeCertificate() {
+            document.getElementById('certificate-preview-section').classList.add('d-none');
+            document.getElementById('certificate-file').value = '';
+            germanCertificateUploaded = false;
+            germanCertificateVerified = false;
+            updateContinueButton();
+        }
+
+        async function proceedToNextStep() {
+            if (selectedLanguages.length === 0) {
+                showError('Please select at least one language');
+                return;
+            }
+
+            const needsGermanVerification = selectedLanguages.includes('german') || selectedLanguages.includes('both');
+            if (needsGermanVerification && !germanCertificateVerified) {
+                showError('Please upload and verify a German language certificate');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('continue-button').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            document.getElementById('continue-button').disabled = true;
+
+            try {
+                // Save language preferences
+                const response = await fetch('/api/application/language', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        languages: selectedLanguages,
+                        german_certificate_verified: germanCertificateVerified
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Redirect to Page 3
+                    window.location.href = '/page3';
+                } else {
+                    throw new Error(result.message || 'Failed to save language preferences');
+                }
+            } catch (error) {
+                console.error('Error saving language preferences:', error);
+                showError('Failed to save your language preferences. Please try again.');
+                
+                // Reset button
+                document.getElementById('continue-button').innerHTML = '<i class="fas fa-arrow-right me-2"></i>Continue to Certificate Analysis';
+                document.getElementById('continue-button').disabled = false;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-section').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('error-section').classList.add('d-none');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

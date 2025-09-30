@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Process - JobScooter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+            --warning-color: #ed8936;
+            --danger-color: #e53e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background: var(--light-bg);
+        }
+
+        .container-custom {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .step-number {
+            background: var(--accent-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .legal-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .agreement-item {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .agreement-item:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .agreement-item.accepted {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+        }
+
+        .time-estimate {
+            background: linear-gradient(135deg, #ffd89b, #19547b);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: #fef5e7;
+            border: 1px solid var(--warning-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .requirements-list {
+            background: #e6fffa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn-done {
+            background: var(--accent-color);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: white;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .btn-done:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(56, 161, 105, 0.3);
+            color: white;
+        }
+
+        .btn-done:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+        }
+
+        .legal-document {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: var(--accent-color);
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .icon-wrapper {
+            background: var(--light-bg);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="color: var(--primary-color);">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark me-3">Step 0 of 5</span>
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container-custom text-center">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="fas fa-clipboard-check me-3"></i>
+                Application Process Overview
+            </h1>
+            <p class="lead">
+                Before we begin, let's walk through what you can expect during your JobScooter application
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-custom">
+        <!-- Time Estimate -->
+        <div class="time-estimate">
+            <h4><i class="fas fa-clock me-2"></i>Total Time Required</h4>
+            <p class="mb-0">Approximately 10-15 minutes to complete all steps</p>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="text-center mb-4">
+            <h3 class="mb-3">Your Journey with JobScooter</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: 0%;"></div>
+            </div>
+            <small class="text-muted">Progress: 0% Complete</small>
+        </div>
+
+        <!-- Application Steps -->
+        <h3 class="mb-4">
+            <i class="fas fa-list-ol me-2"></i>
+            What You'll Do in Each Step
+        </h3>
+
+        <!-- Step 1 -->
+        <div class="step-card">
+            <div class="d-flex align-items-start">
+                <div class="step-number">1</div>
+                <div class="flex-grow-1">
+                    <h5>ID Verification & Account Creation</h5>
+                    <p class="mb-3">Upload your government-issued ID document for automatic data extraction using our AI technology.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-check-circle text-success me-2"></i>What happens:</h6>
+                            <ul class="list-unstyled ms-3">
+                                <li>• AI extracts your personal information</li>
+                                <li>• Manual backup if AI fails</li>
+                                <li>• Account creation with email verification</li>
+                                <li>• Secure login credentials sent to you</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="warning-box">
+                                <i class="fas fa-shield-alt text-warning me-2"></i>
+                                <strong>Privacy Note:</strong> Your ID document is processed and then deleted. We only keep the extracted personal information.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card">
+            <div class="d-flex align-items-start">
+                <div class="step-number">2</div>
+                <div class="flex-grow-1">
+                    <h5>Language Verification</h5>
+                    <p class="mb-3">Select your language preferences and verify German proficiency if applicable.</p>
+                    <div class="d-flex">
+                        <div class="icon-wrapper me-3">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div>
+                            <h6>Language Options:</h6>
+                            <ul class="list-unstyled">
+                                <li>• English applications</li>
+                                <li>• German applications (requires certificate verification)</li>
+                                <li>• Both languages</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card">
+            <div class="d-flex align-items-start">
+                <div class="step-number">3</div>
+                <div class="flex-grow-1">
+                    <h5>Certificate Analysis & Classification</h5>
+                    <p class="mb-3">Upload all your certificates and qualifications for AI-powered analysis and verification.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-robot text-primary me-2"></i>AI Analysis:</h6>
+                            <ul class="list-unstyled ms-3">
+                                <li>• Name verification against your ID</li>
+                                <li>• Certificate classification and grading</li>
+                                <li>• Institution authenticity checks</li>
+                                <li>• Skill and qualification ranking</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="requirements-list">
+                                <h6><i class="fas fa-file-upload text-success me-2"></i>Prepare to Upload:</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Academic certificates</li>
+                                    <li>• Professional certifications</li>
+                                    <li>• Reference letters</li>
+                                    <li>• Training certificates</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card">
+            <div class="d-flex align-items-start">
+                <div class="step-number">4</div>
+                <div class="flex-grow-1">
+                    <h5>Media & Video Introduction</h5>
+                    <p class="mb-3">Add a professional profile picture and record a brief video introduction.</p>
+                    <div class="d-flex">
+                        <div class="icon-wrapper me-3">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div>
+                            <h6>Media Requirements:</h6>
+                            <ul class="list-unstyled">
+                                <li>• Professional profile photograph</li>
+                                <li>• 2-3 minute video introduction</li>
+                                <li>• AI-generated subtitles and transcription</li>
+                                <li>• Video optimization and compression</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-card">
+            <div class="d-flex align-items-start">
+                <div class="step-number">5</div>
+                <div class="flex-grow-1">
+                    <h5>Profile Finalization & Traffic Light System</h5>
+                    <p class="mb-3">AI creates your professional profile, CV, and assigns a quality rating.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-magic text-primary me-2"></i>Auto-Generation:</h6>
+                            <ul class="list-unstyled ms-3">
+                                <li>• Professional CV creation</li>
+                                <li>• Complete profile compilation</li>
+                                <li>• Skills and qualifications summary</li>
+                                <li>• Privacy settings configuration</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-traffic-light text-warning me-2"></i>Quality Rating:</h6>
+                            <ul class="list-unstyled ms-3">
+                                <li><span class="badge bg-success me-2">Green</span>Complete, verified profile</li>
+                                <li><span class="badge bg-warning me-2">Yellow</span>Minor improvements needed</li>
+                                <li><span class="badge bg-danger me-2">Red</span>Significant issues to address</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Agreements Section -->
+        <div class="legal-section">
+            <h3 class="mb-4">
+                <i class="fas fa-gavel me-2"></i>
+                Legal Agreements & Data Protection
+            </h3>
+            <p class="text-muted mb-4">
+                Please read and accept the following agreements to continue with your application.
+            </p>
+
+            <!-- Terms & Conditions -->
+            <div class="agreement-item" id="terms-agreement">
+                <div class="d-flex align-items-start">
+                    <input type="checkbox" class="checkbox-custom" id="terms-checkbox">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-2">
+                            <label for="terms-checkbox" style="cursor: pointer;">
+                                Terms & Conditions
+                                <i class="fas fa-external-link-alt ms-2 text-primary" style="cursor: pointer;" onclick="showModal('termsModal')"></i>
+                            </label>
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            I agree to the JobScooter Terms & Conditions governing the use of the platform and services.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Protection Agreement -->
+            <div class="agreement-item" id="privacy-agreement">
+                <div class="d-flex align-items-start">
+                    <input type="checkbox" class="checkbox-custom" id="privacy-checkbox">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-2">
+                            <label for="privacy-checkbox" style="cursor: pointer;">
+                                Privacy Policy & Data Protection
+                                <i class="fas fa-external-link-alt ms-2 text-primary" style="cursor: pointer;" onclick="showModal('privacyModal')"></i>
+                            </label>
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            I consent to the processing of my personal data as described in the Privacy Policy and Data Protection Agreement.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GDPR Consent -->
+            <div class="agreement-item" id="gdpr-agreement">
+                <div class="d-flex align-items-start">
+                    <input type="checkbox" class="checkbox-custom" id="gdpr-checkbox">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-2">
+                            <label for="gdpr-checkbox" style="cursor: pointer;">
+                                GDPR Compliance & Data Rights
+                                <i class="fas fa-external-link-alt ms-2 text-primary" style="cursor: pointer;" onclick="showModal('gdprModal')"></i>
+                            </label>
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            I acknowledge my rights under GDPR and consent to data processing for the purpose of job application services.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="text-center mt-5 mb-4">
+            <button class="btn btn-done" id="doneButton" onclick="proceedToApplication()" disabled>
+                <i class="fas fa-rocket me-2"></i>
+                Done - Start My Application
+            </button>
+            <p class="text-muted mt-2">
+                <i class="fas fa-lock me-1"></i>
+                Your data is encrypted and secure
+            </p>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terms & Conditions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="legal-document">
+                        <h6>1. Acceptance of Terms</h6>
+                        <p>By accessing and using JobScooter, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                        
+                        <h6>2. Use License</h6>
+                        <p>Permission is granted to temporarily download one copy of JobScooter per device for personal, non-commercial transitory viewing only.</p>
+                        
+                        <h6>3. Service Description</h6>
+                        <p>JobScooter provides AI-powered job application automation services including document processing, profile creation, and employer matching.</p>
+                        
+                        <h6>4. User Responsibilities</h6>
+                        <p>Users are responsible for providing accurate information and maintaining the confidentiality of their account credentials.</p>
+                        
+                        <h6>5. Privacy and Data Protection</h6>
+                        <p>Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and protect your information.</p>
+                        
+                        <h6>6. Limitation of Liability</h6>
+                        <p>In no event shall JobScooter or its suppliers be liable for any damages arising out of the use or inability to use the service.</p>
+                        
+                        <h6>7. Service Availability</h6>
+                        <p>We strive to maintain high service availability but cannot guarantee uninterrupted access to our platform.</p>
+                        
+                        <h6>8. Modifications</h6>
+                        <p>JobScooter may revise these terms at any time without notice. Continued use constitutes acceptance of revised terms.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="acceptTerms()">Accept Terms</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Privacy Policy & Data Protection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="legal-document">
+                        <h6>1. Information We Collect</h6>
+                        <p>We collect personal information you provide including name, email, phone number, identification documents, certificates, and media content.</p>
+                        
+                        <h6>2. How We Use Your Information</h6>
+                        <p>Your information is used to create professional profiles, verify credentials, facilitate job matching, and improve our services.</p>
+                        
+                        <h6>3. Data Processing</h6>
+                        <p>ID documents are processed using AI and then securely deleted. Only extracted personal information is retained in encrypted form.</p>
+                        
+                        <h6>4. Data Sharing</h6>
+                        <p>We share profile information with potential employers based on your privacy settings. We do not sell personal data to third parties.</p>
+                        
+                        <h6>5. Data Security</h6>
+                        <p>We implement industry-standard security measures including encryption, secure servers, and regular security audits.</p>
+                        
+                        <h6>6. Data Retention</h6>
+                        <p>Personal data is retained as long as necessary for service provision or as required by law. You can request data deletion at any time.</p>
+                        
+                        <h6>7. Your Rights</h6>
+                        <p>You have the right to access, correct, delete, or transfer your personal data. Contact us to exercise these rights.</p>
+                        
+                        <h6>8. Contact Information</h6>
+                        <p>For privacy-related questions, contact our Data Protection Officer at privacy@jobscooter.co.za</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="acceptPrivacy()">Accept Privacy Policy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GDPR Modal -->
+    <div class="modal fade" id="gdprModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">GDPR Compliance & Data Rights</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="legal-document">
+                        <h6>Your Rights Under GDPR</h6>
+                        <p>Under the General Data Protection Regulation, you have the following rights:</p>
+                        
+                        <h6>1. Right to Information</h6>
+                        <p>You have the right to be informed about how your personal data is used.</p>
+                        
+                        <h6>2. Right of Access</h6>
+                        <p>You can request access to your personal data and information about how it's processed.</p>
+                        
+                        <h6>3. Right to Rectification</h6>
+                        <p>You can request correction of inaccurate or incomplete personal data.</p>
+                        
+                        <h6>4. Right to Erasure</h6>
+                        <p>You can request deletion of your personal data under certain circumstances.</p>
+                        
+                        <h6>5. Right to Restrict Processing</h6>
+                        <p>You can request limitation of processing of your personal data in specific situations.</p>
+                        
+                        <h6>6. Right to Data Portability</h6>
+                        <p>You can request transfer of your data to another service provider in a structured format.</p>
+                        
+                        <h6>7. Right to Object</h6>
+                        <p>You can object to processing of your personal data based on legitimate interests.</p>
+                        
+                        <h6>8. Legal Basis for Processing</h6>
+                        <p>We process your data based on consent, contract performance, legal obligations, and legitimate interests.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="acceptGdpr()">Accept GDPR Terms</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let acceptedAgreements = {
+            terms: false,
+            privacy: false,
+            gdpr: false
+        };
+
+        function showModal(modalId) {
+            const modal = new bootstrap.Modal(document.getElementById(modalId));
+            modal.show();
+        }
+
+        function acceptTerms() {
+            document.getElementById('terms-checkbox').checked = true;
+            acceptedAgreements.terms = true;
+            updateAgreementStatus('terms-agreement');
+            checkAllAgreements();
+            bootstrap.Modal.getInstance(document.getElementById('termsModal')).hide();
+        }
+
+        function acceptPrivacy() {
+            document.getElementById('privacy-checkbox').checked = true;
+            acceptedAgreements.privacy = true;
+            updateAgreementStatus('privacy-agreement');
+            checkAllAgreements();
+            bootstrap.Modal.getInstance(document.getElementById('privacyModal')).hide();
+        }
+
+        function acceptGdpr() {
+            document.getElementById('gdpr-checkbox').checked = true;
+            acceptedAgreements.gdpr = true;
+            updateAgreementStatus('gdpr-agreement');
+            checkAllAgreements();
+            bootstrap.Modal.getInstance(document.getElementById('gdprModal')).hide();
+        }
+
+        function updateAgreementStatus(agreementId) {
+            const agreement = document.getElementById(agreementId);
+            agreement.classList.add('accepted');
+        }
+
+        function checkAllAgreements() {
+            const allAccepted = Object.values(acceptedAgreements).every(accepted => accepted);
+            document.getElementById('doneButton').disabled = !allAccepted;
+            
+            if (allAccepted) {
+                document.getElementById('doneButton').innerHTML = '<i class="fas fa-rocket me-2"></i>Done - Start My Application';
+            }
+        }
+
+        // Handle checkbox clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('terms-checkbox').addEventListener('change', function() {
+                acceptedAgreements.terms = this.checked;
+                if (this.checked) updateAgreementStatus('terms-agreement');
+                else document.getElementById('terms-agreement').classList.remove('accepted');
+                checkAllAgreements();
+            });
+
+            document.getElementById('privacy-checkbox').addEventListener('change', function() {
+                acceptedAgreements.privacy = this.checked;
+                if (this.checked) updateAgreementStatus('privacy-agreement');
+                else document.getElementById('privacy-agreement').classList.remove('accepted');
+                checkAllAgreements();
+            });
+
+            document.getElementById('gdpr-checkbox').addEventListener('change', function() {
+                acceptedAgreements.gdpr = this.checked;
+                if (this.checked) updateAgreementStatus('gdpr-agreement');
+                else document.getElementById('gdpr-agreement').classList.remove('accepted');
+                checkAllAgreements();
+            });
+        });
+
+        async function proceedToApplication() {
+            if (!Object.values(acceptedAgreements).every(accepted => accepted)) {
+                alert('Please accept all agreements to continue.');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('doneButton').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Session...';
+            document.getElementById('doneButton').disabled = true;
+
+            try {
+                // Create application session
+                const response = await fetch('/api/application/start-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        acceptedTerms: true,
+                        acceptedPrivacy: true,
+                        acceptedGdpr: true,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Store session token
+                    localStorage.setItem('jobscooter_session', data.sessionToken);
+                    
+                    // Redirect to Page 1
+                    window.location.href = '/page1?session=' + data.sessionToken;
+                } else {
+                    throw new Error(data.message || 'Failed to start application session');
+                }
+            } catch (error) {
+                console.error('Error starting application:', error);
+                alert('There was an error starting your application. Please try again.');
+                
+                // Reset button
+                document.getElementById('doneButton').innerHTML = '<i class="fas fa-rocket me-2"></i>Done - Start My Application';
+                document.getElementById('doneButton').disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

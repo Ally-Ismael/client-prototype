@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobScooter - AI-Powered Job Application Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,0 1000,100 0,100"/></svg>');
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-button {
+            background: var(--accent-color);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .cta-button:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(56, 161, 105, 0.3);
+        }
+
+        .features-section {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .testimonials-section {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .testimonial-card {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 2rem;
+        }
+
+        .process-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .process-number {
+            background: var(--accent-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stats-section {
+            padding: 60px 0;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 40px 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: rgba(44, 82, 130, 0.95);">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How it Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#success-stories">Success Stories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light px-3" href="/login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="floating-elements">
+            <div class="floating-element" style="top: 20%; left: 10%;">
+                <i class="fas fa-certificate" style="font-size: 30px;"></i>
+            </div>
+            <div class="floating-element" style="top: 60%; left: 80%; animation-delay: -2s;">
+                <i class="fas fa-user-tie" style="font-size: 25px;"></i>
+            </div>
+            <div class="floating-element" style="top: 40%; left: 70%; animation-delay: -4s;">
+                <i class="fas fa-brain" style="font-size: 35px;"></i>
+            </div>
+        </div>
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">JobScooter - Your AI-Powered Career Assistant</h1>
+                    <p class="hero-subtitle">JobScooter revolutionizes job applications with intelligent document verification, automatic profile creation, and AI-powered credential analysis. Our platform creates professional profiles that help employers discover qualified candidates while ensuring document authenticity and skill verification.</p>
+                    <a href="/pre-application" class="btn cta-button btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Apply Now - It's Free!
+                    </a>
+                    <p class="mt-3 opacity-75">
+                        <i class="fas fa-clock me-1"></i>Takes only 10-15 minutes to complete
+                    </p>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://via.placeholder.com/500x400/2c5282/ffffff?text=AI+Job+Platform" alt="JobScooter Platform" class="img-fluid rounded shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="display-4 fw-bold mb-3">Why Choose JobScooter?</h2>
+                    <p class="lead">The world's first AI-powered job application platform with intelligent document verification and tiered profile access</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>AI-Powered Document Processing</h4>
+                        <p>Our advanced AI extracts information from your ID and certificates automatically, ensuring accuracy and saving you time.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Credential Verification</h4>
+                        <p>We verify your certificates against accredited institutions databases, giving employers confidence in your qualifications.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-traffic-light"></i>
+                        </div>
+                        <h4>Traffic Light System</h4>
+                        <p>Get instant feedback on your profile quality with our color-coded system - Green, Yellow, or Red status indicators.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h4>Multi-Language Support</h4>
+                        <p>Support for English and German applications with language certificate verification for international opportunities.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h4>Video Introductions</h4>
+                        <p>Create compelling video introductions with AI-generated subtitles to make a lasting impression on employers.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h4>Privacy Controls</h4>
+                        <p>Control who sees what with tiered access levels - public preview or full subscriber access to your complete profile.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="process-section">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="display-4 fw-bold mb-3">How It Works</h2>
+                    <p class="lead">Simple 5-step process to create your professional AI-powered profile</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="process-step">
+                        <div class="process-number">1</div>
+                        <h5>ID Verification</h5>
+                        <p>Upload your ID for AI data extraction</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="process-step">
+                        <div class="process-number">2</div>
+                        <h5>Language Selection</h5>
+                        <p>Choose English, German, or both languages</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="process-step">
+                        <div class="process-number">3</div>
+                        <h5>Certificate Analysis</h5>
+                        <p>Upload certificates for AI verification</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="process-step">
+                        <div class="process-number">4</div>
+                        <h5>Media Upload</h5>
+                        <p>Add profile picture and video introduction</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="process-step">
+                        <div class="process-number">5</div>
+                        <h5>Profile Ready</h5>
+                        <p>Your AI-powered profile is live and discoverable</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-number">1,500+</div>
+                        <p>Successful Applications</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-number">99.8%</div>
+                        <p>Document Accuracy</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-number">15 min</div>
+                        <p>Average Completion Time</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <p>Partner Companies</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories Section -->
+    <section id="success-stories" class="testimonials-section">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="display-4 fw-bold mb-3">Success Stories</h2>
+                    <p class="lead">See how JobScooter has transformed careers</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <p class="mb-3">"JobScooter's AI verification saved me hours of paperwork. I got hired within 2 weeks of creating my profile!"</p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50/28a745/ffffff?text=A" class="rounded-circle me-3" alt="Anna">
+                            <div>
+                                <h6 class="mb-0">Anna Mueller</h6>
+                                <small class="text-muted">Software Engineer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <p class="mb-3">"The traffic light system helped me understand exactly what employers were looking for. Green status guaranteed!"</p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50/dc3545/ffffff?text=M" class="rounded-circle me-3" alt="Michael">
+                            <div>
+                                <h6 class="mb-0">Michael Johnson</h6>
+                                <small class="text-muted">Marketing Manager</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <p class="mb-3">"As an international candidate, the multi-language support was crucial. Found my dream job in Germany!"</p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50/007bff/ffffff?text=S" class="rounded-circle me-3" alt="Sarah">
+                            <div>
+                                <h6 class="mb-0">Sarah Chen</h6>
+                                <small class="text-muted">Data Scientist</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5" style="background: var(--accent-color);">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="text-white mb-4">Ready to Transform Your Career?</h2>
+                    <p class="text-white mb-4 fs-5">Join thousands of successful candidates who found their dream jobs through JobScooter</p>
+                    <a href="/pre-application" class="btn btn-light btn-lg px-5">
+                        <i class="fas fa-rocket me-2"></i>Start Your Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5><i class="fas fa-rocket me-2"></i>JobScooter</h5>
+                    <p>Revolutionizing job applications with AI-powered verification and intelligent matching.</p>
+                </div>
+                <div class="col-lg-2">
+                    <h6>Platform</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#features" class="text-light text-decoration-none">Features</a></li>
+                        <li><a href="#how-it-works" class="text-light text-decoration-none">How it Works</a></li>
+                        <li><a href="/login" class="text-light text-decoration-none">Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6>Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Help Center</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Contact</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6>Legal</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Privacy</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Terms</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Cookies</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6>Connect</h6>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="text-light"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 JobScooter. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation to stats on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0s';
+                    entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card, .process-step, .testimonial-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

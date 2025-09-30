@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - JobScooter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+            --warning-color: #ed8936;
+            --danger-color: #e53e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background: var(--light-bg);
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .traffic-light {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .traffic-light.green {
+            background: var(--accent-color);
+        }
+        
+        .traffic-light.yellow {
+            background: var(--warning-color);
+        }
+        
+        .traffic-light.red {
+            background: var(--danger-color);
+        }
+
+        .profile-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--primary-color);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <div class="d-flex">
+                <div class="dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i>Profile
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="editProfile()"><i class="fas fa-edit me-2"></i>Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="viewPublicProfile()"><i class="fas fa-eye me-2"></i>View Public Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Profile Status -->
+            <div class="col-md-8">
+                <div class="dashboard-card">
+                    <div class="d-flex align-items-center mb-4">
+                        <img id="profile-photo" src="https://via.placeholder.com/80" alt="Profile" class="profile-preview me-3">
+                        <div>
+                            <h4 id="user-name">Welcome back!</h4>
+                            <p class="text-muted mb-0" id="user-email">Loading...</p>
+                        </div>
+                        <div class="ms-auto">
+                            <div class="traffic-light green">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5>Application Progress</h5>
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div id="progress-bar" class="progress-bar" style="width: 100%; background: var(--accent-color);"></div>
+                    </div>
+                    <div class="row text-center" id="application-steps">
+                        <div class="col-2">
+                            <div id="step-id" class="text-muted">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <p class="small mt-1">ID Verified</p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div id="step-languages" class="text-muted">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <p class="small mt-1">Languages</p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div id="step-certificates" class="text-muted">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <p class="small mt-1">Certificates</p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div id="step-media" class="text-muted">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <p class="small mt-1">Media</p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div id="step-profile" class="text-muted">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                                <p class="small mt-1">Profile</p>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div id="step-live" class="text-muted">
+                                <i class="fas fa-rocket fa-2x"></i>
+                                <p class="small mt-1">Live!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h3 id="profile-views">0</h3>
+                    <p class="mb-0">Profile Views</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--accent-color), #2f855a);">
+                    <h3 id="employer-contacts">0</h3>
+                    <p class="mb-0">Employer Contacts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <!-- Continue Application Button (if not complete) -->
+            <div class="col-md-12 mb-3" id="continue-application" style="display: none;">
+                <div class="dashboard-card text-center">
+                    <i class="fas fa-play-circle fa-3x text-success mb-3"></i>
+                    <h4>Continue Your Application</h4>
+                    <p class="text-muted">Complete your profile by uploading your media and finalizing your information.</p>
+                    <button class="btn btn-success btn-lg" onclick="continueApplication()">
+                        <i class="fas fa-arrow-right me-2"></i>Continue Application Process
+                    </button>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-card text-center h-100">
+                    <i class="fas fa-edit fa-3x text-primary mb-3"></i>
+                    <h6>Edit Profile</h6>
+                    <p class="small text-muted">Update your information</p>
+                    <button class="btn btn-outline-primary" onclick="editProfile()">Edit</button>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-card text-center h-100">
+                    <i class="fas fa-file-download fa-3x text-success mb-3"></i>
+                    <h6>Download CV</h6>
+                    <p class="small text-muted">Get your generated CV</p>
+                    <button class="btn btn-outline-success" onclick="downloadCV()">Download</button>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-card text-center h-100">
+                    <i class="fas fa-share fa-3x text-info mb-3"></i>
+                    <h6>Share Profile</h6>
+                    <p class="small text-muted">Share with employers</p>
+                    <button class="btn btn-outline-info" onclick="shareProfile()">Share</button>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-card text-center h-100">
+                    <i class="fas fa-chart-line fa-3x text-warning mb-3"></i>
+                    <h6>Analytics</h6>
+                    <p class="small text-muted">View profile stats</p>
+                    <button class="btn btn-outline-warning" onclick="viewAnalytics()">View</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="dashboard-card">
+            <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+            <div id="recent-activity">
+                <div class="d-flex align-items-center py-2">
+                    <i class="fas fa-eye text-primary me-3"></i>
+                    <div>
+                        <p class="mb-0">Your profile was viewed by 3 employers today</p>
+                        <small class="text-muted">2 hours ago</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center py-2">
+                    <i class="fas fa-check-circle text-success me-3"></i>
+                    <div>
+                        <p class="mb-0">Profile completed successfully</p>
+                        <small class="text-muted">1 day ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let authToken = localStorage.getItem('jobscooter_auth_token');
+        let profileSlug = '';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!authToken) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/profile/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update user info
+                    if (data.profile) {
+                        document.getElementById('user-name').textContent = `Welcome back, ${data.profile.first_name}!`;
+                        document.getElementById('user-email').textContent = data.profile.email || '';
+                        profileSlug = data.profile.slug || 'demo-user';
+                        
+                        if (data.profile.profilePhoto) {
+                            document.getElementById('profile-photo').src = data.profile.profilePhoto;
+                        }
+                        
+                        // Update progress bar
+                        const progressBar = document.getElementById('progress-bar');
+                        progressBar.style.width = `${data.profile.completion_percentage || 0}%`;
+                        
+                        // Update traffic light
+                        const trafficLight = document.querySelector('.traffic-light');
+                        trafficLight.className = `traffic-light ${data.profile.traffic_light_status || 'red'}`;
+                        
+                        if (data.profile.traffic_light_status === 'green') {
+                            trafficLight.innerHTML = '<i class="fas fa-check"></i>';
+                        } else if (data.profile.traffic_light_status === 'yellow') {
+                            trafficLight.innerHTML = '<i class="fas fa-exclamation"></i>';
+                        } else {
+                            trafficLight.innerHTML = '<i class="fas fa-times"></i>';
+                        }
+                        
+                        // Show continue application button if profile is incomplete
+                        if (data.profile.completion_percentage < 100) {
+                            document.getElementById('continue-application').style.display = 'block';
+                        }
+                        
+                        // Update application steps based on completion percentage
+                        updateApplicationSteps(data.profile.completion_percentage, data.stats);
+                        
+                        // Update continue button text based on next step needed
+                        updateContinueButton(data.profile.completion_percentage);
+                    }
+
+                    // Update stats
+                    if (data.stats) {
+                        document.getElementById('profile-views').textContent = data.stats.views || '0';
+                        document.getElementById('employer-contacts').textContent = data.stats.contacts || '0';
+                    }
+                    
+                    // Update recent activity
+                    if (data.activities && data.activities.length > 0) {
+                        updateRecentActivity(data.activities);
+                    }
+                } else {
+                    console.error('Failed to load dashboard data');
+                    showError('Failed to load dashboard data');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showError('Unable to connect to server');
+            }
+        }
+
+        function editProfile() {
+            window.location.href = '/profile-edit';
+        }
+
+        function viewPublicProfile() {
+            window.open(`/profile/${profileSlug}`, '_blank');
+        }
+
+        async function downloadCV() {
+            try {
+                const response = await fetch('/api/cv/download', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'JobScooter_CV.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    throw new Error('Failed to download CV');
+                }
+            } catch (error) {
+                console.error('CV download error:', error);
+                alert('Unable to download CV. Please try again later.');
+            }
+        }
+
+        function shareProfile() {
+            const profileUrl = `${window.location.origin}/profile/${profileSlug}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My JobScooter Profile',
+                    text: 'Check out my professional profile on JobScooter',
+                    url: profileUrl
+                });
+            } else {
+                // Fallback to copy to clipboard
+                navigator.clipboard.writeText(profileUrl).then(() => {
+                    alert('Profile link copied to clipboard!');
+                });
+            }
+        }
+
+        function viewAnalytics() {
+            alert('Analytics feature coming soon!');
+        }
+
+        function updateRecentActivity(activities) {
+            const activityContainer = document.getElementById('recent-activity');
+            if (activities.length === 0) {
+                activityContainer.innerHTML = '<p class="text-muted">No recent activity</p>';
+                return;
+            }
+            
+            const activityHtml = activities.map(activity => {
+                const date = new Date(activity.timestamp);
+                const timeAgo = getTimeAgo(date);
+                const icon = getActivityIcon(activity.type);
+                
+                return `
+                    <div class="d-flex align-items-center py-2">
+                        <i class="${icon} me-3"></i>
+                        <div>
+                            <p class="mb-0">${activity.description}</p>
+                            <small class="text-muted">${timeAgo}</small>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            activityContainer.innerHTML = activityHtml;
+        }
+        
+        function getActivityIcon(type) {
+            const icons = {
+                'profile_view': 'fas fa-eye text-primary',
+                'profile_completed': 'fas fa-check-circle text-success',
+                'account_created': 'fas fa-user-plus text-info',
+                'media_upload': 'fas fa-upload text-warning',
+                'certificate_upload': 'fas fa-certificate text-success',
+                'email_verified': 'fas fa-envelope-check text-success'
+            };
+            return icons[type] || 'fas fa-info-circle text-secondary';
+        }
+        
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHour = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHour / 24);
+            
+            if (diffSec < 60) return 'Just now';
+            if (diffMin < 60) return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
+            if (diffHour < 24) return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
+            return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
+        }
+        
+        function showError(message) {
+            // You could add a proper error display here
+            console.error(message);
+        }
+        
+        function updateApplicationSteps(completionPercentage, stats) {
+            // Step completion logic based on percentage:
+            // 0-20%: ID Verification (completed in Page 1)
+            // 21-40%: Languages (Page 2)
+            // 41-60%: Certificates (Page 3)
+            // 61-80%: Media (Page 4)
+            // 81-100%: Profile Complete (Page 5)
+            
+            const steps = [
+                { id: 'step-id', threshold: 20, page: '/page1' },
+                { id: 'step-languages', threshold: 40, page: '/page2' },
+                { id: 'step-certificates', threshold: 60, page: '/page3' },
+                { id: 'step-media', threshold: 80, page: '/page4' },
+                { id: 'step-profile', threshold: 100, page: '/page5' },
+                { id: 'step-live', threshold: 100, page: null }
+            ];
+            
+            steps.forEach(step => {
+                const element = document.getElementById(step.id);
+                const icon = element.querySelector('i');
+                
+                if (completionPercentage >= step.threshold) {
+                    // Step completed - green with check icon
+                    element.className = 'text-success';
+                    icon.className = 'fas fa-check-circle fa-2x';
+                } else {
+                    // Step not completed - red with X icon
+                    element.className = 'text-danger';
+                    icon.className = 'fas fa-times-circle fa-2x';
+                }
+            });
+            
+            // Special case for "Live" step - needs 100% completion
+            const liveStep = document.getElementById('step-live');
+            const liveIcon = liveStep.querySelector('i');
+            if (completionPercentage >= 100) {
+                liveStep.className = 'text-success';
+                liveIcon.className = 'fas fa-rocket fa-2x';
+            } else {
+                liveStep.className = 'text-muted';
+                liveIcon.className = 'fas fa-rocket fa-2x';
+            }
+        }
+        
+        function updateContinueButton(completionPercentage) {
+            const button = document.querySelector('#continue-application button');
+            if (!button) return;
+            
+            let nextStep = '';
+            let nextPage = '';
+            
+            if (completionPercentage < 20) {
+                nextStep = 'Complete ID Verification';
+                nextPage = '/page1';
+            } else if (completionPercentage < 40) {
+                nextStep = 'Select Languages';
+                nextPage = '/page2';
+            } else if (completionPercentage < 60) {
+                nextStep = 'Upload Certificates';
+                nextPage = '/page3';
+            } else if (completionPercentage < 80) {
+                nextStep = 'Add Media & Introduction';
+                nextPage = '/page4';
+            } else if (completionPercentage < 100) {
+                nextStep = 'Finalize Profile';
+                nextPage = '/page5';
+            } else {
+                nextStep = 'Profile Complete!';
+                nextPage = null;
+            }
+            
+            button.innerHTML = `<i class="fas fa-arrow-right me-2"></i>${nextStep}`;
+            button.setAttribute('data-next-page', nextPage);
+        }
+        
+        function continueApplication() {
+            const button = document.querySelector('#continue-application button');
+            const nextPage = button.getAttribute('data-next-page');
+            
+            if (nextPage) {
+                window.location.href = nextPage;
+            } else {
+                // Profile complete - maybe show congratulations or analytics
+                alert('Congratulations! Your profile is complete and live!');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('jobscooter_auth_token');
+            localStorage.removeItem('jobscooter_user');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

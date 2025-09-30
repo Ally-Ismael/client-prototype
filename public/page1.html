@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Verification & Account Creation - JobScooter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+            --warning-color: #ed8936;
+            --danger-color: #e53e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background: var(--light-bg);
+        }
+
+        .container-custom {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .progress-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: var(--accent-color);
+            height: 100%;
+            width: 20%;
+            transition: width 0.3s ease;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .extracted-data {
+            background: #e6fffa;
+            border: 1px solid var(--accent-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .manual-entry {
+            background: #fef5e7;
+            border: 1px solid var(--warning-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(56, 161, 105, 0.25);
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.3);
+        }
+
+        .btn-secondary-custom {
+            background: var(--secondary-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #2d3748;
+            color: white;
+        }
+
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        .spinner-custom {
+            width: 3rem;
+            height: 3rem;
+            border: 0.3rem solid var(--light-bg);
+            border-top: 0.3rem solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: #f0fff4;
+            border: 1px solid var(--accent-color);
+            color: #2f855a;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid var(--danger-color);
+            color: #c53030;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .privacy-note {
+            background: #e6fffa;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .image-preview {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 10px;
+            margin: 1rem auto;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="color: var(--primary-color);">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Step 1 of 5</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-custom">
+        <!-- Progress Header -->
+        <div class="progress-header text-center">
+            <h2 class="mb-3">
+                <i class="fas fa-id-card me-2" style="color: var(--accent-color);"></i>
+                ID Verification & Account Creation
+            </h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <small class="text-muted">Progress: 20% Complete</small>
+        </div>
+
+        <!-- Step 1: ID Document Upload -->
+        <div class="step-card" id="id-upload-section">
+            <h4 class="mb-4">
+                <i class="fas fa-upload me-2"></i>
+                Upload Your ID Document
+            </h4>
+            <p class="text-muted mb-4">
+                Upload a clear photo of your government-issued ID document. Our AI will extract your personal information automatically.
+            </p>
+
+            <div class="upload-area" id="upload-area" onclick="document.getElementById('id-file').click()">
+                <div id="upload-content">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <h5>Click to Upload or Drag & Drop</h5>
+                    <p class="text-muted mb-0">Supported formats: JPG, PNG (Max 10MB)</p>
+                </div>
+                <div class="processing-overlay d-none" id="processing-overlay">
+                    <div class="text-center">
+                        <div class="spinner-custom mb-3"></div>
+                        <h5>Processing ID Document...</h5>
+                        <p class="text-muted">AI is extracting your information</p>
+                    </div>
+                </div>
+            </div>
+            <input type="file" id="id-file" class="d-none" accept="image/*" onchange="handleFileUpload(event)">
+
+            <div class="privacy-note">
+                <i class="fas fa-shield-alt me-2"></i>
+                <strong>Privacy Protection:</strong> Your ID document is processed using AI and then securely deleted. 
+                We only keep the extracted personal information in encrypted form.
+            </div>
+        </div>
+
+        <!-- Step 2: Extracted Data Display -->
+        <div class="step-card d-none" id="extracted-data-section">
+            <h4 class="mb-4">
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                Extracted Information
+            </h4>
+            <p class="text-muted mb-3">Please verify the information extracted from your ID document:</p>
+            
+            <div class="extracted-data" id="extracted-data-display">
+                <!-- Extracted data will be displayed here -->
+            </div>
+            
+            <div class="text-center mt-3">
+                <button class="btn btn-primary-custom me-2" onclick="confirmExtractedData()">
+                    <i class="fas fa-check me-2"></i>Information is Correct
+                </button>
+                <button class="btn btn-secondary-custom" onclick="showManualEntry()">
+                    <i class="fas fa-edit me-2"></i>Edit Information
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Manual Entry (Fallback) -->
+        <div class="step-card d-none" id="manual-entry-section">
+            <h4 class="mb-4">
+                <i class="fas fa-keyboard me-2"></i>
+                Enter Your Information
+            </h4>
+            <p class="text-muted mb-4" id="manual-entry-reason">
+                Please enter your personal information manually.
+            </p>
+
+            <div class="manual-entry">
+                <form id="manual-entry-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="surname" class="form-label">Surname *</label>
+                            <input type="text" class="form-control" id="surname" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="idNumber" class="form-label">ID Number *</label>
+                            <input type="text" class="form-control" id="idNumber" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dateOfBirth">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="text-center mt-3">
+                <button class="btn btn-primary-custom" onclick="submitManualEntry()">
+                    <i class="fas fa-arrow-right me-2"></i>Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4: Additional Information -->
+        <div class="step-card d-none" id="additional-info-section">
+            <h4 class="mb-4">
+                <i class="fas fa-user-plus me-2"></i>
+                Additional Information
+            </h4>
+            <p class="text-muted mb-4">
+                Please provide your contact information to complete your account setup.
+            </p>
+
+            <form id="additional-info-form">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="email" required>
+                        <div class="form-text">We'll send your login credentials to this email</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="phone" required>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="gender" class="form-label">Gender *</label>
+                            <select class="form-control" id="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="preferredName" class="form-label">Preferred Name</label>
+                            <input type="text" class="form-control" id="preferredName">
+                            <div class="form-text">How would you like to be addressed?</div>
+                        </div>
+                    </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-primary-custom" onclick="createAccount()">
+                    <i class="fas fa-user-check me-2"></i>Create My Account
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 5: Account Creation Success -->
+        <div class="step-card d-none" id="success-section">
+            <div class="text-center">
+                <i class="fas fa-check-circle text-success" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                <h3 class="text-success mb-3">Account Created Successfully!</h3>
+                <div class="success-message">
+                    <h5><i class="fas fa-envelope me-2"></i>Check Your Email</h5>
+                    <p class="mb-0">
+                        We've sent your login credentials to <strong id="user-email"></strong>. 
+                        Please check your email and click the verification link to activate your account.
+                    </p>
+                </div>
+                
+                <div class="mt-4">
+                    <h6>What's Next?</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope text-primary me-2"></i>Check your email for login credentials</li>
+                        <li><i class="fas fa-mouse-pointer text-primary me-2"></i>Click the verification link</li>
+                        <li><i class="fas fa-sign-in-alt text-primary me-2"></i>Log in and continue your application</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4">
+                    <a href="/login" class="btn btn-primary-custom me-2">
+                        <i class="fas fa-sign-in-alt me-2"></i>Go to Login
+                    </a>
+                    <button class="btn btn-secondary-custom" onclick="resendEmail()">
+                        <i class="fas fa-paper-plane me-2"></i>Resend Email
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-message d-none" id="error-section">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="error-message"></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let extractedData = {};
+        let sessionToken = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get session token from URL or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            sessionToken = urlParams.get('session') || localStorage.getItem('jobscooter_session');
+            
+            if (!sessionToken) {
+                window.location.href = '/pre-application';
+                return;
+            }
+
+            setupDragAndDrop();
+        });
+
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('upload-area');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        async function handleFile(file) {
+            // Validate file
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+            if (file.size > maxSize) {
+                showError('File size must be less than 10MB');
+                return;
+            }
+
+            if (!allowedTypes.includes(file.type)) {
+                showError('Only JPG and PNG image files are allowed');
+                return;
+            }
+
+            // Show processing overlay
+            document.getElementById('processing-overlay').classList.remove('d-none');
+
+            // Show file preview
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'image-preview';
+                    document.getElementById('upload-content').appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            try {
+                // Upload and process file
+                const formData = new FormData();
+                formData.append('id_document', file);
+                formData.append('session_token', sessionToken);
+
+                const response = await fetch('/api/documents/process-id', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    extractedData = result.extractedData;
+                    displayExtractedData(extractedData);
+                } else if (result.requiresManualEntry) {
+                    showManualEntryWithReason(result.details || 'AI extraction failed. Please enter your information manually.');
+                } else {
+                    throw new Error(result.error || result.message || 'Failed to process ID document');
+                }
+            } catch (error) {
+                console.error('Error processing ID:', error);
+                showManualEntryWithReason('AI extraction failed. Please enter your information manually.');
+            } finally {
+                document.getElementById('processing-overlay').classList.add('d-none');
+            }
+        }
+
+        function displayExtractedData(data) {
+            const display = document.getElementById('extracted-data-display');
+            display.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>First Name:</strong> ${data.firstName || 'N/A'}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Surname:</strong> ${data.surname || 'N/A'}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <strong>ID Number:</strong> ${data.idNumber || 'N/A'}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Date of Birth:</strong> ${data.dateOfBirth || 'N/A'}
+                    </div>
+                </div>
+                ${data.address ? `<div class="mt-2"><strong>Address:</strong> ${data.address}</div>` : ''}
+            `;
+
+            document.getElementById('id-upload-section').classList.add('d-none');
+            document.getElementById('extracted-data-section').classList.remove('d-none');
+        }
+
+        function confirmExtractedData() {
+            showAdditionalInfoForm();
+        }
+
+        function showManualEntry() {
+            // Pre-fill form with extracted data if available
+            if (extractedData.firstName) document.getElementById('firstName').value = extractedData.firstName;
+            if (extractedData.surname) document.getElementById('surname').value = extractedData.surname;
+            if (extractedData.idNumber) document.getElementById('idNumber').value = extractedData.idNumber;
+            if (extractedData.dateOfBirth) document.getElementById('dateOfBirth').value = extractedData.dateOfBirth;
+            if (extractedData.address) document.getElementById('address').value = extractedData.address;
+
+            document.getElementById('extracted-data-section').classList.add('d-none');
+            document.getElementById('manual-entry-section').classList.remove('d-none');
+        }
+
+        function showManualEntryWithReason(reason) {
+            document.getElementById('manual-entry-reason').textContent = reason;
+            document.getElementById('id-upload-section').classList.add('d-none');
+            document.getElementById('manual-entry-section').classList.remove('d-none');
+        }
+
+        async function submitManualEntry() {
+            const form = document.getElementById('manual-entry-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Collect manual entry data
+            extractedData = {
+                firstName: document.getElementById('firstName').value,
+                surname: document.getElementById('surname').value,
+                idNumber: document.getElementById('idNumber').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                address: document.getElementById('address').value
+            };
+
+            try {
+                // Submit manual entry data
+                const response = await fetch('/api/documents/manual-entry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_token: sessionToken,
+                        manual_data: extractedData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showAdditionalInfoForm();
+                } else {
+                    throw new Error(result.message || 'Failed to save manual entry data');
+                }
+            } catch (error) {
+                console.error('Error submitting manual entry:', error);
+                showError('Failed to save your information. Please try again.');
+            }
+        }
+
+        function showAdditionalInfoForm() {
+            document.getElementById('extracted-data-section').classList.add('d-none');
+            document.getElementById('manual-entry-section').classList.add('d-none');
+            document.getElementById('additional-info-section').classList.remove('d-none');
+        }
+
+        async function createAccount() {
+            const form = document.getElementById('additional-info-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const gender = document.getElementById('gender').value;
+            const preferredName = document.getElementById('preferredName').value;
+
+            try {
+                const response = await fetch('/api/auth/create-from-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_token: sessionToken,
+                        email: email,
+                        phone: phone,
+                        gender: gender,
+                        preferred_name: preferredName,
+                        extracted_data: extractedData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    document.getElementById('user-email').textContent = email;
+                    document.getElementById('additional-info-section').classList.add('d-none');
+                    document.getElementById('success-section').classList.remove('d-none');
+                } else {
+                    throw new Error(result.message || 'Failed to create account');
+                }
+            } catch (error) {
+                console.error('Error creating account:', error);
+                showError('Failed to create your account. Please try again.');
+            }
+        }
+
+        async function resendEmail() {
+            try {
+                const response = await fetch('/api/auth/resend-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_token: sessionToken
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    alert('Verification email resent successfully!');
+                } else {
+                    throw new Error(result.message || 'Failed to resend email');
+                }
+            } catch (error) {
+                console.error('Error resending email:', error);
+                showError('Failed to resend email. Please try again.');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-section').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('error-section').classList.add('d-none');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

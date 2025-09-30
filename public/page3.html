@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Analysis - JobScooter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+            --warning-color: #ed8936;
+            --danger-color: #e53e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background: var(--light-bg);
+        }
+
+        .container-custom {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .progress-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: var(--accent-color);
+            height: 100%;
+            width: 60%;
+            transition: width 0.3s ease;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .upload-zone {
+            border: 2px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .certificate-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .certificate-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .certificate-item.processing {
+            border-color: var(--warning-color);
+            background: #fef5e7;
+        }
+
+        .certificate-item.verified {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .certificate-item.failed {
+            border-color: var(--danger-color);
+            background: #fed7d7;
+        }
+
+        .certificate-preview {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .spinner-custom {
+            width: 2rem;
+            height: 2rem;
+            border: 0.2rem solid var(--light-bg);
+            border-top: 0.2rem solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .classification-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+
+        .badge-academic {
+            background: #e6f3ff;
+            color: #0066cc;
+            border: 1px solid #0066cc;
+        }
+
+        .badge-professional {
+            background: #f0fff4;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .badge-language {
+            background: #fef5e7;
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .badge-reference {
+            background: #f5e6ff;
+            color: #8b5cf6;
+            border: 1px solid #8b5cf6;
+        }
+
+        .verification-status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .status-processing {
+            background: #fef5e7;
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .status-verified {
+            background: #f0fff4;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .status-failed {
+            background: #fed7d7;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .status-suspicious {
+            background: #ffeaa7;
+            color: #e17055;
+            border: 1px solid #e17055;
+        }
+
+        .analysis-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.3);
+            color: white;
+        }
+
+        .analysis-summary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+        }
+
+        .skill-tag {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid var(--danger-color);
+            color: #c53030;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .institution-warning {
+            background: #ffeaa7;
+            border: 1px solid #e17055;
+            color: #e17055;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="color: var(--primary-color);">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Step 3 of 5</span>
+                <a href="/dashboard" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-custom">
+        <!-- Progress Header -->
+        <div class="progress-header text-center">
+            <h2 class="mb-3">
+                <i class="fas fa-certificate me-2" style="color: var(--accent-color);"></i>
+                Certificate Analysis & Classification
+            </h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <small class="text-muted">Progress: 60% Complete</small>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="step-card">
+            <h4 class="mb-4">
+                <i class="fas fa-upload me-2"></i>
+                Upload Your Certificates
+            </h4>
+            <p class="text-muted mb-4">
+                Upload all your certificates, qualifications, and reference letters. Our AI will analyze and classify them automatically.
+            </p>
+
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('certificate-files').click()">
+                <div id="upload-content">
+                    <i class="fas fa-file-upload upload-icon"></i>
+                    <h5 id="upload-title">Click to Upload or Drag & Drop</h5>
+                    <p class="text-muted mb-2" id="upload-subtitle">Upload multiple files at once</p>
+                    <p class="text-muted mb-0">Supported formats: JPG, PNG, PDF (Max 10MB each)</p>
+                </div>
+            </div>
+            <input type="file" id="certificate-files" class="d-none" accept="image/*,.pdf" multiple onchange="handleFileUpload(event)">
+
+            <div class="mt-3">
+                <h6><i class="fas fa-info-circle me-2"></i>Types of Documents to Upload:</h6>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-graduation-cap text-primary me-2"></i>Academic certificates</li>
+                            <li><i class="fas fa-award text-success me-2"></i>Professional certifications</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-file-alt text-warning me-2"></i>Reference letters</li>
+                            <li><i class="fas fa-certificate text-info me-2"></i>Training certificates</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uploaded Certificates -->
+        <div class="step-card" id="certificates-section" style="display: none;">
+            <h4 class="mb-4">
+                <i class="fas fa-list me-2"></i>
+                Uploaded Certificates
+            </h4>
+            <div id="certificates-list">
+                <!-- Certificates will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Analysis Summary -->
+        <div class="step-card" id="analysis-section" style="display: none;">
+            <h4 class="mb-4">
+                <i class="fas fa-chart-bar me-2"></i>
+                Analysis Summary
+            </h4>
+            
+            <div class="analysis-summary" id="analysis-summary">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h3 id="total-certificates">0</h3>
+                        <small>Total Certificates</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 id="verified-count">0</h3>
+                        <small>Verified</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 id="academic-count">0</h3>
+                        <small>Academic</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 id="professional-count">0</h3>
+                        <small>Professional</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h6>Identified Skills & Qualifications:</h6>
+                <div id="skills-container">
+                    <!-- Skills will be displayed here -->
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h6>Job Categories Matched:</h6>
+                <div id="categories-container">
+                    <!-- Categories will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center">
+            <button class="btn btn-primary-custom" id="continue-button" onclick="proceedToNextStep()" style="display: none;">
+                <i class="fas fa-arrow-right me-2"></i>Continue to Media Upload
+            </button>
+            <p class="text-muted mt-2" id="upload-instruction">
+                <i class="fas fa-info-circle me-1"></i>
+                Upload at least one certificate to continue
+            </p>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-message d-none" id="error-section">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="error-message"></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let uploadedCertificates = [];
+        let authToken = localStorage.getItem('jobscooter_auth_token');
+        let analysisComplete = false;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!authToken) {
+                window.location.href = '/login';
+                return;
+            }
+
+            setupDragAndDrop();
+            loadExistingCertificates();
+        });
+
+        async function loadExistingCertificates() {
+            try {
+                const response = await fetch('/api/application/certificates/list', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.certificates && data.certificates.length > 0) {
+                        uploadedCertificates = data.certificates;
+                        displayCertificates();
+                        updateAnalysisSummary();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading certificates:', error);
+            }
+        }
+
+        function setupDragAndDrop() {
+            const uploadZone = document.getElementById('upload-zone');
+            
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                
+                const files = Array.from(e.dataTransfer.files);
+                if (files.length > 0) {
+                    handleFiles(files);
+                }
+            });
+        }
+
+        function handleFileUpload(event) {
+            console.log('📁 handleFileUpload called');
+            console.log('📁 Event target:', event.target);
+            console.log('📁 Files from input:', event.target.files);
+            
+            const files = Array.from(event.target.files);
+            console.log('📁 Files array:', files);
+            
+            // Immediate visual feedback
+            if (files.length > 0) {
+                console.log('✅ Files found, updating UI');
+                const uploadTitle = document.getElementById('upload-title');
+                const uploadSubtitle = document.getElementById('upload-subtitle');
+                
+                uploadTitle.textContent = `Processing ${files.length} file(s)...`;
+                uploadSubtitle.textContent = files.map(f => f.name).join(', ');
+                
+                // Change upload zone style to indicate processing
+                const uploadZone = document.getElementById('upload-zone');
+                uploadZone.style.borderColor = '#38a169';
+                uploadZone.style.backgroundColor = '#f0fff4';
+                
+                console.log('✅ UI updated, calling handleFiles');
+                handleFiles(files);
+            } else {
+                console.log('⚠️ No files selected');
+            }
+        }
+
+        async function handleFiles(files) {
+            console.log('🔄 handleFiles called with', files.length, 'files');
+            console.log('🔑 Auth token:', authToken ? 'Present' : 'Missing');
+            
+            // Validate files
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+
+            for (const file of files) {
+                console.log('📄 Processing file:', file.name, 'Type:', file.type, 'Size:', file.size);
+                
+                if (file.size > maxSize) {
+                    console.error('❌ File too large:', file.name);
+                    showError(`File ${file.name} is too large. Maximum size is 10MB`);
+                    continue;
+                }
+
+                if (!allowedTypes.includes(file.type)) {
+                    console.error('❌ Invalid file type:', file.type);
+                    showError(`File ${file.name} is not supported. Only JPG, PNG, and PDF files are allowed`);
+                    continue;
+                }
+
+                console.log('✅ File passed validation, uploading:', file.name);
+                await uploadAndProcessCertificate(file);
+            }
+
+            // Reset file input
+            document.getElementById('certificate-files').value = '';
+        }
+
+        async function uploadAndProcessCertificate(file) {
+            console.log('📤 uploadAndProcessCertificate called for:', file.name);
+            
+            // Create certificate item
+            const certificateId = 'cert_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const certificate = {
+                id: certificateId,
+                filename: file.name,
+                status: 'processing',
+                type: file.type,
+                size: file.size,
+                uploadedAt: new Date().toISOString()
+            };
+
+            console.log('📄 Created certificate object:', certificate);
+            uploadedCertificates.push(certificate);
+            console.log('📋 Total uploaded certificates:', uploadedCertificates.length);
+            displayCertificates();
+
+            try {
+                console.log('📤 Starting file upload to server...');
+                // Upload file
+                const formData = new FormData();
+                formData.append('certificate', file);
+                console.log('📄 FormData prepared with file:', file.name);
+
+                console.log('🔗 Making request to: /api/application/certificates/upload');
+                console.log('🔑 Using auth token:', authToken ? authToken.substring(0, 10) + '...' : 'Missing');
+                
+                const response = await fetch('/api/application/certificates/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+                
+                console.log('📨 Response status:', response.status, response.statusText);
+
+                const result = await response.json();
+                console.log('📄 Server response:', result);
+
+                if (response.ok && result.success) {
+                    console.log('✅ Upload successful! Certificate ID:', result.certificateId);
+                    // Update certificate with server data
+                    const cert = uploadedCertificates.find(c => c.id === certificateId);
+                    cert.serverId = result.certificateId;
+                    cert.status = 'analyzing';
+                    console.log('📄 Updated certificate:', cert);
+                    
+                    displayCertificates();
+
+                    // Start AI analysis
+                    console.log('🧠 Starting AI analysis for certificate:', result.certificateId);
+                    await analyzeCertificate(certificateId, result.certificateId);
+                } else {
+                    console.error('❌ Upload failed. Response:', result);
+                    throw new Error(result.message || result.error || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('❌ Error uploading certificate:', error);
+                console.error('❌ Error details:', {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                });
+                
+                // Update certificate status
+                const cert = uploadedCertificates.find(c => c.id === certificateId);
+                if (cert) {
+                    cert.status = 'failed';
+                    cert.error = error.message;
+                    console.log('📄 Updated failed certificate:', cert);
+                } else {
+                    console.error('❌ Could not find certificate to update:', certificateId);
+                }
+                
+                displayCertificates();
+                showError(`Failed to upload ${file.name}: ${error.message}`);
+            }
+        }
+
+        async function analyzeCertificate(localId, serverId) {
+            try {
+                const response = await fetch(`/api/application/certificates/process`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        certificate_id: serverId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Update certificate with analysis results
+                    const cert = uploadedCertificates.find(c => c.id === localId);
+                    cert.status = 'verified';
+                    cert.analysis = result.analysis;
+                    cert.classification = result.classification;
+                    cert.verification = result.verification;
+                    
+                    displayCertificates();
+                    updateAnalysisSummary();
+                } else {
+                    throw new Error(result.message || 'Analysis failed');
+                }
+            } catch (error) {
+                console.error('Error analyzing certificate:', error);
+                
+                const cert = uploadedCertificates.find(c => c.id === localId);
+                cert.status = 'failed';
+                cert.error = error.message;
+                
+                displayCertificates();
+            }
+        }
+
+        function displayCertificates() {
+            const certificatesSection = document.getElementById('certificates-section');
+            const certificatesList = document.getElementById('certificates-list');
+            
+            if (uploadedCertificates.length === 0) {
+                certificatesSection.style.display = 'none';
+                return;
+            }
+
+            certificatesSection.style.display = 'block';
+            certificatesList.innerHTML = '';
+
+            uploadedCertificates.forEach(cert => {
+                const certItem = createCertificateItem(cert);
+                certificatesList.appendChild(certItem);
+            });
+        }
+
+        function createCertificateItem(certificate) {
+            const item = document.createElement('div');
+            item.className = `certificate-item ${certificate.status}`;
+            
+            let statusBadge = '';
+            let statusClass = 'status-processing';
+            let statusIcon = 'fas fa-clock';
+            let statusText = 'Processing...';
+            
+            switch (certificate.status) {
+                case 'verified':
+                    statusClass = 'status-verified';
+                    statusIcon = 'fas fa-check-circle';
+                    statusText = 'Verified';
+                    break;
+                case 'failed':
+                    statusClass = 'status-failed';
+                    statusIcon = 'fas fa-times-circle';
+                    statusText = 'Failed';
+                    break;
+                case 'analyzing':
+                    statusIcon = 'fas fa-brain';
+                    statusText = 'Analyzing...';
+                    break;
+                case 'suspicious':
+                    statusClass = 'status-suspicious';
+                    statusIcon = 'fas fa-exclamation-triangle';
+                    statusText = 'Suspicious';
+                    break;
+            }
+
+            let classificationBadges = '';
+            if (certificate.classification) {
+                if (certificate.classification.type) {
+                    classificationBadges += `<span class="classification-badge badge-${certificate.classification.type}">${certificate.classification.type}</span>`;
+                }
+                if (certificate.classification.level) {
+                    classificationBadges += `<span class="classification-badge badge-academic">${certificate.classification.level}</span>`;
+                }
+            }
+
+            let analysisDetails = '';
+            if (certificate.analysis) {
+                analysisDetails = `
+                    <div class="analysis-details">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small><strong>Institution:</strong> ${certificate.analysis.institution || 'N/A'}</small><br>
+                                <small><strong>Subject:</strong> ${certificate.analysis.subject || 'N/A'}</small>
+                            </div>
+                            <div class="col-md-6">
+                                <small><strong>Date Issued:</strong> ${certificate.analysis.dateIssued || 'N/A'}</small><br>
+                                <small><strong>Grade:</strong> ${certificate.analysis.grade || 'N/A'}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let institutionWarning = '';
+            if (certificate.verification && !certificate.verification.institutionVerified) {
+                institutionWarning = `
+                    <div class="institution-warning">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        Institution could not be verified against accredited databases
+                    </div>
+                `;
+            }
+
+            item.innerHTML = `
+                <div class="d-flex align-items-start">
+                    <div class="certificate-preview-container me-3">
+                        ${certificate.type && certificate.type.startsWith('image/') ? 
+                            `<i class="fas fa-image fa-3x text-muted"></i>` : 
+                            `<i class="fas fa-file-pdf fa-3x text-muted"></i>`
+                        }
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${certificate.filename}</h6>
+                        <div class="mb-2">
+                            ${classificationBadges}
+                        </div>
+                        <div class="verification-status ${statusClass}">
+                            <i class="${statusIcon} me-1"></i>${statusText}
+                        </div>
+                        ${analysisDetails}
+                        ${institutionWarning}
+                        ${certificate.error ? `<div class="text-danger mt-2"><small>Error: ${certificate.error}</small></div>` : ''}
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm" onclick="removeCertificate('${certificate.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                ${certificate.status === 'processing' || certificate.status === 'analyzing' ? 
+                    '<div class="processing-overlay"><div class="spinner-custom"></div></div>' : ''}
+            `;
+
+            return item;
+        }
+
+        function removeCertificate(certificateId) {
+            uploadedCertificates = uploadedCertificates.filter(c => c.id !== certificateId);
+            displayCertificates();
+            updateAnalysisSummary();
+        }
+
+        function updateAnalysisSummary() {
+            const totalCerts = uploadedCertificates.length;
+            const verifiedCerts = uploadedCertificates.filter(c => c.status === 'verified').length;
+            const academicCerts = uploadedCertificates.filter(c => c.classification && c.classification.type === 'academic').length;
+            const professionalCerts = uploadedCertificates.filter(c => c.classification && c.classification.type === 'professional').length;
+
+            document.getElementById('total-certificates').textContent = totalCerts;
+            document.getElementById('verified-count').textContent = verifiedCerts;
+            document.getElementById('academic-count').textContent = academicCerts;
+            document.getElementById('professional-count').textContent = professionalCerts;
+
+            // Extract and display skills
+            const skills = new Set();
+            const categories = new Set();
+
+            uploadedCertificates.forEach(cert => {
+                if (cert.analysis && cert.analysis.skills) {
+                    cert.analysis.skills.forEach(skill => skills.add(skill));
+                }
+                if (cert.analysis && cert.analysis.category) {
+                    categories.add(cert.analysis.category);
+                }
+            });
+
+            // Display skills
+            const skillsContainer = document.getElementById('skills-container');
+            skillsContainer.innerHTML = '';
+            skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'skill-tag';
+                skillTag.textContent = skill;
+                skillsContainer.appendChild(skillTag);
+            });
+
+            // Display categories
+            const categoriesContainer = document.getElementById('categories-container');
+            categoriesContainer.innerHTML = '';
+            categories.forEach(category => {
+                const categoryTag = document.createElement('span');
+                categoryTag.className = 'skill-tag';
+                categoryTag.style.background = 'var(--secondary-color)';
+                categoryTag.textContent = category;
+                categoriesContainer.appendChild(categoryTag);
+            });
+
+            // Show analysis section and continue button if we have certificates
+            if (totalCerts > 0) {
+                document.getElementById('analysis-section').style.display = 'block';
+                document.getElementById('continue-button').style.display = 'inline-block';
+                document.getElementById('upload-instruction').style.display = 'none';
+                analysisComplete = true;
+            }
+        }
+
+        async function proceedToNextStep() {
+            if (!analysisComplete || uploadedCertificates.length === 0) {
+                showError('Please upload at least one certificate and wait for analysis to complete');
+                return;
+            }
+
+            // Check if any certificates are still processing
+            const stillProcessing = uploadedCertificates.some(c => c.status === 'processing' || c.status === 'analyzing');
+            if (stillProcessing) {
+                showError('Please wait for all certificates to finish processing');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('continue-button').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Analysis...';
+            document.getElementById('continue-button').disabled = true;
+
+            try {
+                // Save certificate analysis results
+                const response = await fetch('/api/application/certificates', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        certificates: uploadedCertificates.map(c => ({
+                            id: c.serverId,
+                            analysis: c.analysis,
+                            classification: c.classification,
+                            verification: c.verification
+                        }))
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Redirect to Page 4
+                    window.location.href = '/page4';
+                } else {
+                    throw new Error(result.message || 'Failed to save certificate analysis');
+                }
+            } catch (error) {
+                console.error('Error saving certificate analysis:', error);
+                showError('Failed to save your certificate analysis. Please try again.');
+                
+                // Reset button
+                document.getElementById('continue-button').innerHTML = '<i class="fas fa-arrow-right me-2"></i>Continue to Media Upload';
+                document.getElementById('continue-button').disabled = false;
+            }
+        }
+
+        function showError(message) {
+            console.error('❌ showError called:', message);
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-section').classList.remove('d-none');
+            
+            // Reset upload zone on error
+            const uploadZone = document.getElementById('upload-zone');
+            const uploadTitle = document.getElementById('upload-title');
+            const uploadSubtitle = document.getElementById('upload-subtitle');
+            
+            uploadZone.style.borderColor = '#e53e3e';
+            uploadZone.style.backgroundColor = '#fed7d7';
+            uploadTitle.textContent = 'Upload Failed - Try Again';
+            uploadSubtitle.textContent = 'Click to retry uploading your certificates';
+            
+            setTimeout(() => {
+                document.getElementById('error-section').classList.add('d-none');
+                // Reset upload zone style
+                uploadZone.style.borderColor = '#cbd5e0';
+                uploadZone.style.backgroundColor = '';
+                uploadTitle.textContent = 'Click to Upload or Drag & Drop';
+                uploadSubtitle.textContent = 'Upload multiple files at once';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

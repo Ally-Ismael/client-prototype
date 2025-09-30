@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media & Introduction - JobScooter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --accent-color: #38a169;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+            --warning-color: #ed8936;
+            --danger-color: #e53e3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background: var(--light-bg);
+        }
+
+        .container-custom {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .progress-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: var(--accent-color);
+            height: 100%;
+            width: 80%;
+            transition: width 0.3s ease;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-color);
+            background: #f0fff4;
+            transform: scale(1.02);
+        }
+
+        .profile-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .video-controls {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .record-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--danger-color);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .record-button:hover {
+            background: #c53030;
+            transform: scale(1.1);
+        }
+
+        .record-button.recording {
+            background: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(56, 161, 105, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(56, 161, 105, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 161, 105, 0); }
+        }
+
+        .video-preview {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        .transcription-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            min-height: 100px;
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.3);
+            color: white;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid var(--danger-color);
+            color: #c53030;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: #f0fff4;
+            border: 1px solid var(--accent-color);
+            color: #2f855a;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .processing-status {
+            background: #fef5e7;
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--danger-color);
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="color: var(--primary-color);">
+                <i class="fas fa-rocket me-2"></i>JobScooter
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-3">Step 4 of 5</span>
+                <a href="/dashboard" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-custom">
+        <!-- Progress Header -->
+        <div class="progress-header text-center">
+            <h2 class="mb-3">
+                <i class="fas fa-video me-2" style="color: var(--accent-color);"></i>
+                Media & Video Introduction
+            </h2>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <small class="text-muted">Progress: 80% Complete</small>
+        </div>
+
+        <!-- Profile Picture Section -->
+        <div class="step-card">
+            <h4 class="mb-4">
+                <i class="fas fa-camera me-2"></i>
+                Profile Picture
+            </h4>
+            <p class="text-muted mb-4">
+                Upload a professional profile picture that represents you well. This will be visible to employers on your profile.
+            </p>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="upload-area" id="photo-upload-area" onclick="document.getElementById('photo-file').click()">
+                        <div id="photo-upload-content">
+                            <i class="fas fa-image upload-icon"></i>
+                            <h6>Click to Upload Photo</h6>
+                            <p class="text-muted mb-0">JPG, PNG (Max 5MB)</p>
+                        </div>
+                    </div>
+                    <input type="file" id="photo-file" class="d-none" accept="image/*" onchange="handlePhotoUpload(event)">
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="profile-preview" class="profile-preview d-none" src="" alt="Profile Preview">
+                    <div id="photo-placeholder" style="display: block;">
+                        <i class="fas fa-user-circle text-muted" style="font-size: 8rem;"></i>
+                        <p class="text-muted">Your profile picture will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Introduction Section -->
+        <div class="step-card">
+            <h4 class="mb-4">
+                <i class="fas fa-video me-2"></i>
+                Video Introduction
+            </h4>
+            <p class="text-muted mb-4">
+                Record a 2-3 minute video introducing yourself to potential employers. Talk about your background, skills, and career goals.
+            </p>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="video-controls text-center">
+                        <video id="video-preview" class="video-preview d-none" controls></video>
+                        <video id="camera-feed" class="video-preview" autoplay muted></video>
+                        
+                        <div class="mt-3">
+                            <button class="record-button" id="record-button" onclick="toggleRecording()">
+                                <i class="fas fa-video" id="record-icon"></i>
+                            </button>
+                            <div class="timer" id="timer">00:00</div>
+                        </div>
+
+                        <div class="mt-3">
+                            <button class="btn btn-outline-secondary me-2" onclick="startCamera()" id="start-camera-btn">
+                                <i class="fas fa-camera me-1"></i>Start Camera
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="document.getElementById('video-file').click()">
+                                <i class="fas fa-upload me-1"></i>Upload Video
+                            </button>
+                        </div>
+                        <input type="file" id="video-file" class="d-none" accept="video/*" onchange="handleVideoUpload(event)">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-lightbulb me-2"></i>Tips for a Great Video:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Speak clearly and confidently</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Good lighting and quiet environment</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Professional attire</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Mention your key skills</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Keep it between 2-3 minutes</li>
+                    </ul>
+
+                    <div class="transcription-area" id="transcription-area" style="display: none;">
+                        <h6><i class="fas fa-closed-captioning me-2"></i>AI Transcription:</h6>
+                        <div id="transcription-text">Transcription will appear here...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Status -->
+        <div class="processing-status d-none" id="processing-status">
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            Processing media files and generating transcription...
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message d-none" id="success-message">
+            <i class="fas fa-check-circle me-2"></i>
+            Media files uploaded and processed successfully!
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center">
+            <button class="btn btn-primary-custom" id="continue-button" onclick="proceedToNextStep()" disabled>
+                <i class="fas fa-arrow-right me-2"></i>Complete Profile Creation
+            </button>
+            <p class="text-muted mt-2" id="upload-instruction">
+                <i class="fas fa-info-circle me-1"></i>
+                Upload a profile picture and video to continue
+            </p>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-message d-none" id="error-section">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="error-message"></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let authToken = localStorage.getItem('jobscooter_auth_token');
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
+        let recordingTimer;
+        let recordingTime = 0;
+        let stream;
+        let profilePhotoUploaded = false;
+        let videoUploaded = false;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!authToken) {
+                window.location.href = '/login';
+                return;
+            }
+            setupDragAndDrop();
+            checkExistingMedia();
+        });
+
+        function setupDragAndDrop() {
+            const photoArea = document.getElementById('photo-upload-area');
+            
+            photoArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                photoArea.classList.add('dragover');
+            });
+
+            photoArea.addEventListener('dragleave', () => {
+                photoArea.classList.remove('dragover');
+            });
+
+            photoArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                photoArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    handlePhotoFile(files[0]);
+                }
+            });
+        }
+
+        async function checkExistingMedia() {
+            try {
+                const response = await fetch('/api/profile/', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const user = data.user;
+                    
+                    if (user.profile_picture_url) {
+                        document.getElementById('profile-preview').src = user.profile_picture_url;
+                        document.getElementById('profile-preview').classList.remove('d-none');
+                        document.getElementById('photo-placeholder').style.display = 'none';
+                        profilePhotoUploaded = true;
+                    }
+                    if (user.video_intro_url) {
+                        document.getElementById('video-preview').src = user.video_intro_url;
+                        document.getElementById('video-preview').classList.remove('d-none');
+                        document.getElementById('camera-feed').style.display = 'none';
+                        videoUploaded = true;
+                    }
+                    
+                    // Show existing transcription if available
+                    if (user.video_transcript) {
+                        document.getElementById('transcription-text').textContent = user.video_transcript;
+                        document.getElementById('transcription-area').style.display = 'block';
+                    }
+                    
+                    updateContinueButton();
+                }
+            } catch (error) {
+                console.error('Error checking existing media:', error);
+            }
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handlePhotoFile(file);
+            }
+        }
+
+        async function handlePhotoFile(file) {
+            // Validate file
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                showError('Image file must be less than 5MB');
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                showError('Please upload a valid image file');
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-preview').src = e.target.result;
+                document.getElementById('profile-preview').classList.remove('d-none');
+                document.getElementById('photo-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+
+            // Upload file
+            try {
+                const formData = new FormData();
+                formData.append('profile_picture', file);
+
+                const response = await fetch('/api/documents/media/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.profilePicture) {
+                    profilePhotoUploaded = true;
+                    updateContinueButton();
+                    showSuccess('Profile picture uploaded successfully!');
+                } else {
+                    throw new Error(result.error || result.message || 'Upload failed');
+                }
+            } catch (error) {
+                showError('Failed to upload profile picture: ' + error.message);
+            }
+        }
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 640, height: 480 }, 
+                    audio: true 
+                });
+                
+                document.getElementById('camera-feed').srcObject = stream;
+                document.getElementById('start-camera-btn').style.display = 'none';
+                document.getElementById('record-button').disabled = false;
+            } catch (error) {
+                showError('Could not access camera: ' + error.message);
+            }
+        }
+
+        function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            if (!stream) {
+                showError('Please start your camera first');
+                return;
+            }
+
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                
+                document.getElementById('video-preview').src = url;
+                document.getElementById('video-preview').classList.remove('d-none');
+                document.getElementById('camera-feed').style.display = 'none';
+                
+                // Upload the recorded video
+                uploadVideoBlob(blob);
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            recordingTime = 0;
+
+            document.getElementById('record-button').classList.add('recording');
+            document.getElementById('record-icon').className = 'fas fa-stop';
+
+            // Start timer
+            recordingTimer = setInterval(() => {
+                recordingTime++;
+                const minutes = Math.floor(recordingTime / 60);
+                const seconds = recordingTime % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-stop after 3 minutes
+                if (recordingTime >= 180) {
+                    stopRecording();
+                }
+            }, 1000);
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                clearInterval(recordingTimer);
+
+                document.getElementById('record-button').classList.remove('recording');
+                document.getElementById('record-icon').className = 'fas fa-video';
+
+                // Stop camera stream
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            }
+        }
+
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleVideoFile(file);
+            }
+        }
+
+        async function handleVideoFile(file) {
+            const maxSize = 100 * 1024 * 1024; // 100MB
+            if (file.size > maxSize) {
+                showError('Video file must be less than 100MB');
+                return;
+            }
+
+            if (!file.type.startsWith('video/')) {
+                showError('Please upload a valid video file');
+                return;
+            }
+
+            // Show preview
+            const url = URL.createObjectURL(file);
+            document.getElementById('video-preview').src = url;
+            document.getElementById('video-preview').classList.remove('d-none');
+            document.getElementById('camera-feed').style.display = 'none';
+
+            await uploadVideoBlob(file);
+        }
+
+        async function uploadVideoBlob(blob) {
+            try {
+                document.getElementById('processing-status').classList.remove('d-none');
+
+                const formData = new FormData();
+                formData.append('video', blob, 'introduction.webm');
+
+                const response = await fetch('/api/documents/media/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.video) {
+                    videoUploaded = true;
+                    updateContinueButton();
+                    
+                    // Show transcription if available
+                    if (result.video.transcription) {
+                        document.getElementById('transcription-text').textContent = result.video.transcription;
+                        document.getElementById('transcription-area').style.display = 'block';
+                    }
+
+                    document.getElementById('processing-status').classList.add('d-none');
+                    showSuccess('Video uploaded and processed successfully!');
+                } else {
+                    throw new Error(result.error || result.message || 'Upload failed');
+                }
+            } catch (error) {
+                document.getElementById('processing-status').classList.add('d-none');
+                showError('Failed to upload video: ' + error.message);
+            }
+        }
+
+        function updateContinueButton() {
+            const continueButton = document.getElementById('continue-button');
+            const instruction = document.getElementById('upload-instruction');
+
+            if (profilePhotoUploaded && videoUploaded) {
+                continueButton.disabled = false;
+                instruction.innerHTML = '<i class="fas fa-check-circle text-success me-1"></i>Ready to complete your profile!';
+            } else {
+                continueButton.disabled = true;
+                const missing = [];
+                if (!profilePhotoUploaded) missing.push('profile picture');
+                if (!videoUploaded) missing.push('video introduction');
+                instruction.innerHTML = `<i class="fas fa-info-circle me-1"></i>Please upload: ${missing.join(' and ')}`;
+            }
+        }
+
+        async function proceedToNextStep() {
+            if (!profilePhotoUploaded || !videoUploaded) {
+                showError('Please upload both a profile picture and video introduction');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('continue-button').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Finalizing...';
+            document.getElementById('continue-button').disabled = true;
+
+            try {
+                // Since media is already uploaded to the user's profile,
+                // we can proceed directly to the next page
+                showSuccess('Media upload completed successfully!');
+                
+                // Small delay to show success message
+                setTimeout(() => {
+                    window.location.href = '/page5';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error completing media step:', error);
+                showError('Failed to complete media step. Please try again.');
+                
+                // Reset button
+                document.getElementById('continue-button').innerHTML = '<i class="fas fa-arrow-right me-2"></i>Complete Profile Creation';
+                document.getElementById('continue-button').disabled = false;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-section').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('error-section').classList.add('d-none');
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.innerHTML = '<i class="fas fa-check-circle me-2"></i>' + message;
+            successDiv.classList.remove('d-none');
+            setTimeout(() => {
+                successDiv.classList.add('d-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
