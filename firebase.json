@@ -1,11 +1,41 @@
 {
   "hosting": {
-    "public": ".",
-    "site": "sedap",
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/public/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/login",
+        "destination": "/login.html"
+      },
+      {
+        "source": "/dashboard",
+        "destination": "/dashboard.html"
+      },
+      {
+        "source": "/pre-application",
+        "destination": "/pre-application.html"
+      },
+      {
+        "source": "/profile-edit",
+        "destination": "/profile-edit.html"
+      },
+      {
+        "source": "/public-profile",
+        "destination": "/public-profile.html"
+      },
+      {
+        "source": "/verify-email",
+        "destination": "/verify-email.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   }
 }
